@@ -79,4 +79,24 @@ class OrderTest {
         Assertions.assertTrue(order.getOrderState()== Order.State.REALIZED);
     }
 
+    @Test
+    void statesTestWhileSubmittingAfterEachAddedItem(){
+        Instant now = Instant.now();
+        Mockito.when(clock.instant()).thenReturn(now).thenReturn(now);
+        order.addItem(item1);
+        order.submit();
+        Assertions.assertTrue(order.getOrderState()== Order.State.SUBMITTED);
+        order.addItem(item2);
+        order.submit();
+        Assertions.assertTrue(order.getOrderState()== Order.State.SUBMITTED);
+        order.addItem(item3);
+        Assertions.assertTrue(order.getOrderState()== Order.State.CREATED);
+        order.submit();
+        Assertions.assertTrue(order.getOrderState()== Order.State.SUBMITTED);
+        order.confirm();
+        Assertions.assertTrue(order.getOrderState()== Order.State.CONFIRMED);
+        order.realize();
+        Assertions.assertTrue(order.getOrderState()== Order.State.REALIZED);
+    }
+
 }
