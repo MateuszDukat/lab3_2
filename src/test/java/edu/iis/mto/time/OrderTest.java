@@ -99,4 +99,17 @@ class OrderTest {
         Assertions.assertTrue(order.getOrderState()== Order.State.REALIZED);
     }
 
+    @Test
+    void timeGoingBackwardsTest() {
+        Instant now = Instant.now();
+        Instant later = Instant.now().plus(Duration.ofHours(-1));
+        Mockito.when(clock.instant()).thenReturn(now).thenReturn(later);
+
+        order.submit();
+        Assertions.assertThrows(Exception.class,()->{
+            order.confirm();
+            //I assume there should be some Exception thrown here, but it could be that I'm just nitpicking
+        });
+    }
+
 }
