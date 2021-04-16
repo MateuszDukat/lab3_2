@@ -49,4 +49,11 @@ class OrderTest {
         Assertions.assertDoesNotThrow(order::confirm);
     }
 
+    @Test
+    void confirmWithoutSubmissionTest() {
+        Assertions.assertThrows(OrderStateException.class,()->{
+            order.confirm();
+        });
+    }
+
 }
