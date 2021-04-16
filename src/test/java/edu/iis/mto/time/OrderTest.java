@@ -28,7 +28,7 @@ class OrderTest {
     }
 
     @Test
-    void confirm25HoursAfterSubmitionShouldThrowException() {
+    void confirm25HoursAfterSubmissionShouldThrowException() {
         Instant now = Instant.now();
         Instant later = Instant.now().plus(Duration.ofHours(25));
         Mockito.when(clock.instant()).thenReturn(now).thenReturn(later);
@@ -37,8 +37,16 @@ class OrderTest {
         Assertions.assertThrows(OrderExpiredException.class,()->{
             order.confirm();
         });
+    }
 
+    @Test
+    void confirm24HoursAfterSubmissionShouldNotThrowException() {
+        Instant now = Instant.now();
+        Instant later = Instant.now().plus(Duration.ofHours(24));
+        Mockito.when(clock.instant()).thenReturn(now).thenReturn(later);
 
+        order.submit();
+        Assertions.assertDoesNotThrow(order::confirm);
     }
 
 }
