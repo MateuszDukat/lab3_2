@@ -20,11 +20,17 @@ class OrderTest {
     private Clock clock;
 
     private Order order;
+    private OrderItem item1;
+    private OrderItem item2;
+    private OrderItem item3;
 
     @BeforeEach
     void setUp() throws Exception {
         clock = Mockito.mock(Clock.class);
         order = new Order(clock);
+        item1 = new OrderItem();
+        item2 = new OrderItem();
+        item3 = new OrderItem();
     }
 
     @Test
@@ -54,6 +60,23 @@ class OrderTest {
         Assertions.assertThrows(OrderStateException.class,()->{
             order.confirm();
         });
+    }
+
+    @Test
+    void statesTest(){
+
+        Instant now = Instant.now();
+        Mockito.when(clock.instant()).thenReturn(now).thenReturn(now);
+        order.addItem(item1);
+        order.addItem(item2);
+        order.addItem(item3);
+        Assertions.assertTrue(order.getOrderState()== Order.State.CREATED);
+        order.submit();
+        Assertions.assertTrue(order.getOrderState()== Order.State.SUBMITTED);
+        order.confirm();
+        Assertions.assertTrue(order.getOrderState()== Order.State.CONFIRMED);
+        order.realize();
+        Assertions.assertTrue(order.getOrderState()== Order.State.REALIZED);
     }
 
 }
